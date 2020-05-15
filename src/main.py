@@ -1,7 +1,7 @@
 from led import Led
 from button import Button
 from utime import sleep
-
+from utime import ticks_ms
 button_left = Button(23)
 button_right = Button(18)
 led_green = Led(19)
@@ -13,13 +13,13 @@ while True:
   first = button_left.state() #sem premir, está em 1. O botão é ativo com 0
   second = button_right.state()
 
-  i = 0
-  while i <= 9:
+  now = 0
+  while now <= 9000:
     led_green.on()
-    i +=1
+    now = ticks_ms()
     if not first and second: #premir o botão da esquerda apenas
-      if i <= 4: #se o led verde estiver aceso por menos de 4s
-        sleep(4-i) #deixar verde até completar os 4s e depois passa para amarelo
+      if now <= 4000: #se o led verde estiver aceso por menos de 4s
+        sleep(4000-now) #deixar verde até completar os 4s e depois passa para amarelo
         led_green.off()
         led_yellow.on()
         sleep(1)
@@ -27,7 +27,7 @@ while True:
         led_red.on()
         sleep(5)
         led_red.off()
-      if i > 4: #se o led verde estiver aceso por mais de 4s, passa imediatamente para amarelo
+      if now > 4000: #se o led verde estiver aceso por mais de 4s, passa imediatamente para amarelo
         led_green.off()
         led_yellow.on()
         sleep(1)
