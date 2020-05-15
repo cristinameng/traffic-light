@@ -19,7 +19,7 @@ while True:
     now = ticks_ms() #espero que isto me dê o tempo em ms até um botão ser premido
     if not first and second: #premir o botão da esquerda apenas
       if now <= 4000: #se o led verde estiver aceso por menos de 4s
-        sleep(4000-now) #deixar verde até completar os 4s e depois passa para amarelo
+        sleep((4000-now)*0.001) #deixar verde até completar os 4s e depois passa para amarelo
         led_green.off()
         led_yellow.on()
         sleep(1)
@@ -52,7 +52,7 @@ while True:
       led_red.off()
 
     else:
-      sleep(9000-now)
+      sleep((9000-now)*0.001)
       led_green.off()
       led_yellow.on()
       sleep(1)
