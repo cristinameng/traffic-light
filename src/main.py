@@ -1,62 +1,84 @@
 from led import Led
 from button import Button
-from utime import sleep
 from utime import ticks_ms
+from utime import ticks_diff
 button_left = Button(23)
 button_right = Button(18)
 led_green = Led(19)
 led_yellow = Led(22)
-led_yellow.blink(1000)
 led_red = Led(21)
 
+def getMaxTime(currentColor):
+  if currentColor == led_red:
+    return 5000
+  elif currentColor == led_yellow:
+    return 1000
+  elif currentColor == led_green:
+    return 9000
+
+def getNextColor(currentColor):
+  if currentColor == led_red:
+    return led_green
+  elif currentColor == led_yellow:
+    return led_red
+  elif currentColor == led_green:
+    return led_yellow
+
+
+
+first = button_left.state() #sem premir, está em 1. O botão é ativo com 0
+second = button_right.state()
+
+currentColor = led_green
+currentColor.on()
+last_change_time = ticks_ms()
+
 while True:
-  first = button_left.state() #sem premir, está em 1. O botão é ativo com 0
+  first = button_left.state()
   second = button_right.state()
 
-  now = 0
-  while now <= 9000:
-    led_green.on()
-    now = ticks_ms() #espero que isto me dê o tempo em ms até um botão ser premido
-    if not first and second: #premir o botão da esquerda apenas
-      if now <= 4000: #se o led verde estiver aceso por menos de 4s
-        sleep((4000-now)*0.001) #deixar verde até completar os 4s e depois passa para amarelo
-        led_green.off()
-        led_yellow.on()
-        sleep(1)
-        led_yellow.off()
-        led_red.on()
-        sleep(5)
-        led_red.off()
-      if now > 4000: #se o led verde estiver aceso por mais de 4s, passa imediatamente para amarelo
-        led_green.off()
-        led_yellow.on()
-        sleep(1)
-        led_yellow.off()
-        led_red.on()
-        sleep(5)
-        led_red.off()
+  if first and not second: #amarelo intermitente
+    currentColor.off()
+    led_yellow.blink(1000)
+    while first: #esperar que o user deixe de pressionar o botao
+      first = button_left.state()
+  
+    while not first:
+      led_yellow.proc()
+      first = button_left.state()
+    
+    led_yellow.off()
+    currentColor.on()
+    last_change_time = ticks_ms()
+    while first:  #esperar que o user deixe de pressionar o botao
+      first = button_left.state()
+  
+  first = button_left.state()
+  second = button_right.state()
+  print(second)
 
-    if first and not second: #premir o botão da direita apenas
-      while not first and second: #enquanto que o botão não for premido novamente, entra em amarelo intermitente
-        led_red.off()
-        led_green.off()
-        led_yellow.proc()
-      led_green.on() #quando é novamente premido, volta ao semáforo normal
-      sleep(9)
-      led_green.off()
-      led_yellow.on()
-      sleep(1)
-      led_yellow.off()
-      led_red.on()
-      sleep(5)
-      led_red.off()
-
+  if second:
+    print("ENTERED IF")
+    if ticks_diff(ticks_ms(),last_change_time) < 4000:
+      print("SMALL")
+      while ticks_diff(ticks_ms(),last_change_time) < 4000:
+        print("oi")
+      currentColor.off()
+      currentColor = led_green
+      currentColor.on()
+      last_change_time = ticks_ms()
     else:
-      sleep((9000-now)*0.001)
-      led_green.off()
-      led_yellow.on()
-      sleep(1)
-      led_yellow.off()
-      led_red.on()
-      sleep(5)
-      led_red.off()
+      print("HUGE - BIG")
+      currentColor.off()
+      currentColor = led_green
+      currentColor.on()
+      last_change_time = ticks_ms()
+  
+  if ticks_diff(ticks_ms(),last_change_time) >= getMaxTime(currentColor):
+    currentColor.off()
+    currentColor = getNextColor(currentColor)
+    currentColor.on()
+    last_change_time = ticks_ms()
+  
+  
+  
