@@ -36,7 +36,7 @@ last_change_time = ticks_ms()
 while True:
   first = button_left.state()
   second = button_right.state()
-
+  
   if first and not second: #amarelo intermitente
     currentColor.off()
     led_yellow.blink(1000)
@@ -60,7 +60,7 @@ while True:
     while ticks_diff(ticks_ms(),last_change_time) < 4000:
       pass
     currentColor.off()
-    currentColor = led_green
+    currentColor = getNextColor(currentColor)
     currentColor.on()
     last_change_time = ticks_ms()
   
