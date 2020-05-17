@@ -26,7 +26,7 @@ def getNextColor(currentColor):
 
 
 
-first = button_left.state() #sem premir, está em 1. O botão é ativo com 0
+first = button_left.state() 
 second = button_right.state()
 
 currentColor = led_green
@@ -56,15 +56,15 @@ while True:
   first = button_left.state()
   second = button_right.state()
 
-  if second and currentColor == led_green:
-    while ticks_diff(ticks_ms(),last_change_time) < 4000:
+  if second and currentColor == led_green: #botão dos peões
+    while ticks_diff(ticks_ms(),last_change_time) < 4000: #se o tempo estiver abaixo dos 4s, não fazer nada 
       pass
-    currentColor.off()
+    currentColor.off() #quando atinge os 4s, desligar o led verde e passar para as proximas cores
     currentColor = getNextColor(currentColor)
     currentColor.on()
     last_change_time = ticks_ms()
   
-  if ticks_diff(ticks_ms(),last_change_time) >= getMaxTime(currentColor):
+  if ticks_diff(ticks_ms(),last_change_time) >= getMaxTime(currentColor): #semáforo normal
     currentColor.off()
     currentColor = getNextColor(currentColor)
     currentColor.on()
