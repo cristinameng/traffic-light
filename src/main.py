@@ -55,30 +55,18 @@ while True:
   
   first = button_left.state()
   second = button_right.state()
-  print(second)
 
-  if second:
-    print("ENTERED IF")
-    if ticks_diff(ticks_ms(),last_change_time) < 4000:
-      print("SMALL")
-      while ticks_diff(ticks_ms(),last_change_time) < 4000:
-        print("oi")
-      currentColor.off()
-      currentColor = led_green
-      currentColor.on()
-      last_change_time = ticks_ms()
-    else:
-      print("HUGE - BIG")
-      currentColor.off()
-      currentColor = led_green
-      currentColor.on()
-      last_change_time = ticks_ms()
+  if second and currentColor == led_green:
+    while ticks_diff(ticks_ms(),last_change_time) < 4000:
+      pass
+    currentColor.off()
+    currentColor = led_green
+    currentColor.on()
+    last_change_time = ticks_ms()
   
   if ticks_diff(ticks_ms(),last_change_time) >= getMaxTime(currentColor):
     currentColor.off()
     currentColor = getNextColor(currentColor)
     currentColor.on()
     last_change_time = ticks_ms()
-  
-  
   
